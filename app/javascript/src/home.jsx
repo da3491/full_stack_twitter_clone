@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import './login.jsx'
 
 import './home.scss';
 
-const Home = props => (
-  <h1>Home page react is working</h1>
+const Home = () => (
+  <Login></Login>
 )
 
 document.addEventListener('DOMContentLoaded', () => {
