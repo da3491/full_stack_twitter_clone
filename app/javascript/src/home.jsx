@@ -1,69 +1,211 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { handleErrors, safeCredentials } from '../utils/fetchHelper';
+
+import Tweet from './tweet'
 
 import './home.scss';
 
-const Home = () => (
-  <>
-    <nav className='navbar navbar-expand navbar-light bg-light'>
-      <div className='container'>
-        <a className='navbar-brand' href="#">Logo</a>
-        <div className='collapse navbar-collapse'>
-          <label htmlFor='language'>language:</label>
-          <select name="language" id='language_dropdown'>
-            <option>Bahasa Malaya</option>
-            <option>Dansk</option>
-            <option>English</option>
-            <option>Suomi</option>
-          </select>
-        </div>
-      </div>
-    </nav>
-    <main className='container row m-auto mt-5'>
-      <div className='col-7 d-flex flex-column justify-content-between'>
-        <div className='me-lg-5'>
-          <h1 className='mb-4'>Welcome to Twitter.</h1>
-          <p>Connect with your friends - and other fascinating people. Get in-the-moment updates on the things that interest you.  And watch events unfold, in real time, from every angle.</p>
-        </div>
-        <div>
-          <div>Hack Pacific - Backendium Twitter Project</div>
-          <a>Tweet and photo by @Hackpacific 3:20PM - 15 December 2016</a>
-        </div>
-      </div>
-      <div className='col-5'>
-        <div id="section__id" className='border rounded mb-3'>
-          <div className='d-flex flex-column gap-3 m-3'>
-            <input className='w-100' placeholder='Username'></input>
-            <div className='d-flex justify-content-between'>
-              <input className='flex-shrink-1 ' placeholder='Password'></input>
-              <button className='btn btn-primary btn-sm text-nowrap'>Log in</button>
-            </div>
-            <div className='d-flex'>
-              <div className='d-flex'>
-                <input type='checkbox' className='me-2' />
-                <div className='me-2'>Remember Me</div>
+// create class component
+// componentDidMount-fetch tweets
+
+// logout => delete session
+// get tweets
+
+// post tweet
+// delete tweet
+// get tweets/:user
+
+
+class Home extends React.Component {
+  state = {
+    tweets: [],
+    username: '',
+    message: '',
+    loading: true,
+    error: ''
+  }
+
+  componentDidMount() {
+    this.getTweets()
+    this.getUser()
+  }
+
+  handleChange = (e) => {
+    e.preventDefault()
+    this.setState({
+      message: e.target.value
+    })
+  }
+
+  getTweets = (e) => {
+    if (e) { e.preventDefault(); }
+    this.setState({
+      error: '',
+    });
+
+    fetch('/api/tweets', safeCredentials({
+      method: 'GET',
+    }))
+      .then(handleErrors)
+      .then(data => {
+        this.setState({
+          tweets: data.tweets,
+          loading: false,
+        })
+      })
+      .catch(error => {
+        this.setState({ error: 'Could not get tweets.' })
+      })
+  }
+
+  getUser = (e) => {
+    if (e) { e.preventDefault(); }
+    this.setState({
+      error: '',
+    });
+
+    fetch('/api/authenticated', safeCredentials({
+      method: 'GET',
+    }))
+      .then(handleErrors)
+      .then(data => {
+        this.setState({
+          username: data.username,
+          loading: false,
+        })
+      })
+      .catch(error => {
+        this.setState({ error: 'Could not get user.' })
+      })
+  }
+
+  endSession = (e) => {
+    if (e) { e.preventDefault(); }
+    this.setState({
+      error: '',
+    });
+
+
+    fetch('/api/sessions', safeCredentials({
+      method: 'DELETE',
+    }))
+      .then(handleErrors)
+      .then(data => {
+        if (data.success) {
+          console.log('successfully ended session')
+          const params = new URLSearchParams(window.location.search);
+          const redirect_url = params.get('redirect_url') || '/login';
+          window.location = redirect_url;
+        }
+      }).catch(error => {
+        this.setState({ error: 'Could not log out.' })
+      })
+  }
+
+  createTweet = (e) => {
+    if (e) { e.preventDefault(); }
+    this.setState({
+      error: '',
+    });
+
+    fetch('/api/tweets', safeCredentials({
+      method: 'POST',
+      body: {
+        username: this.state.username,
+        message: this.state.message,
+      }
+    }))
+      .then(handleErrors)
+      .then(data => {
+        console.log(data)
+      })
+      .catch(error => {
+        this.setState({ error: 'Could not post tweet.' })
+      })
+  }
+
+  render() {
+    const { tweets, username, loading } = this.state
+    return (
+      <>
+        <nav className='navbar navbar-expand navbar-light bg-light'>
+          <div className='container'>
+            <a href='#'>
+              <i className="fa-brands fa-twitter fs-5 text-primary"></i>
+            </a>
+            <div className='collapse navbar-collapse'>
+              <div className='input-group ms-auto'>
+                <input type='text' className='form-control' placeholder='Search for...' />
+                <span className='input-group-text'>Go!</span>
               </div>
-              <a href="#" className='text-decoration-none'>Forgot password?</a>
+              <div className='text-secondary ms-5'>
+                <span role='button' className='text-decoration-none' onClick={this.endSession}>logout</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div id='section__signup' className='border rounded p-3'>
-          <div>
-            <strong className='pe-2'>New to Twitter?</strong>
-            <a href="#" className='text-decoration-none text-secondary'>Sign up</a>
+        </nav>
+        <main className='container row gap-3 justify-content-center'>
+          <div className='col-4 my-3'>
+            <div className='border p-3 bg-white rounded'>
+              <div>
+                <h4 className='mb-0'>{username}</h4>
+                <p className='text-secondary'>@{username}</p>
+              </div>
+              <div className='row'>
+                <div className='col-4'>
+                  <span className='text-secondary'>Tweets</span>
+                  <div className='text-primary'>4</div>
+                </div>
+                <div className='col-4'>
+                  <span className='text-secondary'>Following</span>
+                  <div className='text-primary'>0</div>
+                </div>            <div className='col-4'>
+                  <span className='text-secondary'>Followers</span>
+                  <div className='text-primary'>0</div>
+                </div>
+              </div>
+            </div>
+            <div className='col border my-3 bg-white rounded'>
+              <div className='p-3'>
+                <div className='d-flex align-items-center'>
+                  <div className='fs-4 text-secondary'>Trends</div>
+                  <div className='mx-2 mb-1'>.</div>
+                  <div className='text-primary'>Change</div>
+                </div>
+                <ul className='text-decoration-none list-unstyled'>
+                  <li className='text-primary'>#<a>Hongkong</a></li>
+                  <li className='text-primary'>#<a>Ruby</a></li>
+                  <li className='text-primary'>#<a>foobarbaz</a></li>
+                  <li className='text-primary'>#<a>rails</a></li>
+                  <li className='text-primary'>#<a>API</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div className='input-group'>
-            <input className='my-2 w-100 form-control' placeholder='Username'></input>
-            <input className='my-2 w-100 form-control' placeholder="Email"></input>
-            <input className='my-2 w-100 form-control' placeholder='Password'></input>
+          <div className='col-6 p-0 my-3 rounded'>
+            <form id='post-tweet' className='p-3' onSubmit={this.createTweet}>
+              <input type="text"
+                className='w-100 mb-3 form-control'
+                placeholder="What's happening?"
+                onChange={this.handleChange} />
+              <div className='d-flex align-items-center justify-content-end'>
+                <div className='pe-3'>140</div>
+                <button type='submit' className='btn btn-sm btn-primary'>Tweet</button>
+              </div>
+            </form>
+            <div id='tweet-feed'>
+              {tweets.map(tweet => {
+                return <Tweet key={tweet.id} props={tweet} />
+              })}
+            </div>
           </div>
-          <button className='btn btn-warning fw-bold'>Sign up for Twitter</button>
-        </div>
-        <div></div>
-      </div>
-    </main>
-  </>
-)
+          <div></div>
+        </main>
+      </>
+    )
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
