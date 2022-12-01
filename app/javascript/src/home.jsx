@@ -6,21 +6,10 @@ import Tweet from './tweet'
 
 import './home.scss';
 
-// create class component
-// componentDidMount-fetch tweets
-
-// logout => delete session
-// get tweets
-
-// post tweet
-// delete tweet
-// get tweets/:user
-
-
 class Home extends React.Component {
   state = {
     tweets: [],
-    username: '',
+    authUser: '',
     message: '',
     loading: true,
     error: ''
@@ -28,7 +17,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.getTweets()
-    this.getUser()
+    this.getAuthUser()
   }
 
   handleChange = (e) => {
@@ -59,7 +48,7 @@ class Home extends React.Component {
       })
   }
 
-  getUser = (e) => {
+  getAuthUser = (e) => {
     if (e) { e.preventDefault(); }
     this.setState({
       error: '',
@@ -71,7 +60,7 @@ class Home extends React.Component {
       .then(handleErrors)
       .then(data => {
         this.setState({
-          username: data.username,
+          authUser: data.username,
           loading: false,
         })
       })
@@ -104,17 +93,17 @@ class Home extends React.Component {
   }
 
   createTweet = (e) => {
-    if (e) { e.preventDefault(); }
     this.setState({
       error: '',
     });
 
     fetch('/api/tweets', safeCredentials({
       method: 'POST',
-      body: {
-        username: this.state.username,
-        message: this.state.message,
-      }
+      body: JSON.stringify({
+        tweet: {
+          message: this.state.message,
+        }
+      })
     }))
       .then(handleErrors)
       .then(data => {
@@ -126,12 +115,12 @@ class Home extends React.Component {
   }
 
   render() {
-    const { tweets, username, loading } = this.state
+    const { tweets, authUser, loading } = this.state
     return (
       <>
         <nav className='navbar navbar-expand navbar-light bg-light'>
           <div className='container'>
-            <a href='#'>
+            <a href='/'>
               <i className="fa-brands fa-twitter fs-5 text-primary"></i>
             </a>
             <div className='collapse navbar-collapse'>
@@ -149,8 +138,8 @@ class Home extends React.Component {
           <div className='col-4 my-3'>
             <div className='border p-3 bg-white rounded'>
               <div>
-                <h4 className='mb-0'>{username}</h4>
-                <p className='text-secondary'>@{username}</p>
+                <h4 className='mb-0'>{authUser}</h4>
+                <p className='text-secondary'>@{authUser}</p>
               </div>
               <div className='row'>
                 <div className='col-4'>
@@ -196,11 +185,10 @@ class Home extends React.Component {
             </form>
             <div id='tweet-feed'>
               {tweets.map(tweet => {
-                return <Tweet key={tweet.id} props={tweet} />
+                return <Tweet key={tweet.id} props={tweet} authUser={authUser} />
               })}
             </div>
           </div>
-          <div></div>
         </main>
       </>
     )

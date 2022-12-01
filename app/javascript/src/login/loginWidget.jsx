@@ -1,5 +1,5 @@
 import React from 'react'
-import { handleErrors, safeCredentials } from '../utils/fetchHelper'
+import { handleErrors, safeCredentials } from '../../utils/fetchHelper'
 
 class LoginWidget extends React.Component {
     state = {

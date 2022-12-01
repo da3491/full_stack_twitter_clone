@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { safeCredentials, handleErrors } from '../utils/fetchHelper';
+import { safeCredentials, handleErrors } from '../../utils/fetchHelper';
 
 import LoginWidget from './loginWidget';
 import SignupWidget from './signupWidget';
@@ -32,7 +32,7 @@ class Login extends React.Component {
             <>
                 <nav className='navbar navbar-expand navbar-light bg-light'>
                     <div className='container'>
-                        <a href="#">
+                        <a href="/">
                             <i className="fa-brands fa-twitter fs-5 text-primary"></i>
                         </a>
                         <div className='collapse navbar-collapse'>
