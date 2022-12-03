@@ -10,7 +10,6 @@ const Home = () => {
   const [tweets, setTweets] = useState([])
   const [authUser, setAuthUser] = useState('')
   const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     getTweets().then(data => setTweets(data.tweets))
@@ -23,8 +22,8 @@ const Home = () => {
   }
 
   const handleReload = () => {
+    console.log('=>handleReload gets tweets')
     getTweets().then(data => setTweets(data.tweets))
-    console.log('handleDelete was run')
   }
 
   return (

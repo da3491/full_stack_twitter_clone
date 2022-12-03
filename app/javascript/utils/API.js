@@ -88,7 +88,8 @@ export const createTweet = (e, message) => {
 }
 
 // delete tweet
-export const deleteTweet = (id) => {
+export const deleteTweet = (e, id) => {
+    if (e) { e.preventDefault() }
     fetch(`/api/tweets/${id}`, safeCredentials({
         method: 'DELETE',
     }))

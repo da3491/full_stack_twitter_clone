@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import { getTweetsByUser, getAuthUser, endSession, createTweet, getTweets } from '../utils/API';
+import { getTweetsByUser, getAuthUser, endSession, createTweet } from '../utils/API';
 
 import Tweet from './tweet'
 
@@ -12,8 +12,9 @@ const User = () => {
     const [tweets, setTweets] = useState([])
     const [authUser, setAuthUser] = useState('')
     const [message, setMessage] = useState('')
-    const [loading, setLoading] = useState(true)
 
+    // chose to use useEffect for tweets but results in infinite loop
+    // but I need to update the state when created or deleted
     useEffect(() => {
         getTweetsByUser(username).then(data => setTweets(data.tweets))
         getAuthUser().then(data => setAuthUser(data.username))
