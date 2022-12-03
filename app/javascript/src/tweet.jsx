@@ -1,20 +1,7 @@
 import React from 'react'
-import { handleErrors, safeCredentials } from '../utils/fetchHelper';
+import { deleteTweet } from '../utils/API';
 
-
-const Tweet = ({ props, authUser }) => {
-    const deleteTweet = () => {
-        fetch(`/api/tweets/${props.id}`, safeCredentials({
-            method: 'DELETE',
-        }))
-            .then(handleErrors)
-            .then(data => {
-                return data
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
+const Tweet = ({ props, authUser, reloadPage }) => {
     return (
         <>
             <div className='col border-top border-bottom m-0 bg-white'>
@@ -25,7 +12,7 @@ const Tweet = ({ props, authUser }) => {
                     </div>
                     <p>{props.message}</p>
                     <div className='d-flex'>
-                        {authUser === props.username ? <button className='btn border-none m-0 p-0 ms-auto text-primary' onClick={deleteTweet}>Delete</button> : ''}
+                        {authUser === props.username ? <button className='btn border-none m-0 p-0 ms-auto text-primary' onClick={e => { deleteTweet(props.id); reloadPage() }}>Delete</button> : ''}
                     </div>
                 </div>
             </div>

@@ -34,10 +34,7 @@ class SignupWidget extends React.Component {
         }))
             .then(handleErrors)
             .then(data => {
-                console.log(success)
-                if (data.user) {
-                    this.login()
-                }
+                this.login()
             }).catch(error => {
                 this.setState({
                     error: 'Could not sign up.',
@@ -51,7 +48,7 @@ class SignupWidget extends React.Component {
             error: '',
         });
 
-
+        console.log('logging in')
         fetch('/api/sessions', safeCredentials({
             method: 'POST',
             body: JSON.stringify({
@@ -63,12 +60,9 @@ class SignupWidget extends React.Component {
         }))
             .then(handleErrors)
             .then(data => {
-                if (data.success) {
-                    console.log(success)
-                    const params = new URLSearchParams(window.location.search);
-                    const redirect_url = params.get('redirect_url') || '/';
-                    window.location = redirect_url;
-                }
+                const params = new URLSearchParams(window.location.search);
+                const redirect_url = params.get('redirect_url') || '/';
+                window.location = redirect_url;
             }).catch(error => {
                 this.setState({
                     error: 'Could not log in.',
