@@ -12,7 +12,7 @@ const Tweet = ({ props, authUser, reloadPage }) => {
                     </div>
                     <p>{props.message}</p>
                     <div className='d-flex'>
-                        {authUser === props.username ? <button className='btn border-none m-0 p-0 ms-auto text-primary' onClick={e => { deleteTweet(e, props.id); reloadPage() }}>Delete</button> : ''}
+                        {authUser === props.username ? <button className='btn border-none m-0 p-0 ms-auto text-primary' onClick={e => { deleteTweet(e, props.id).then(reloadPage) }}>Delete</button> : ''}
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import { handleErrors, safeCredentials } from '../../utils/fetchHelper'
+import { createSession } from '../../utils/API'
 
 class LoginWidget extends React.Component {
     state = {
@@ -14,41 +15,11 @@ class LoginWidget extends React.Component {
         })
     }
 
-    login = (e) => {
-        if (e) { e.preventDefault(); }
-        this.setState({
-            error: '',
-        });
-
-
-        fetch('/api/sessions', safeCredentials({
-            method: 'POST',
-            body: JSON.stringify({
-                user: {
-                    username: this.state.username,
-                    password: this.state.password,
-                }
-            })
-        }))
-            .then(handleErrors)
-            .then(data => {
-                if (data.success) {
-                    const params = new URLSearchParams(window.location.search);
-                    const redirect_url = params.get('redirect_url') || '/';
-                    window.location = redirect_url;
-                }
-            }).catch(error => {
-                this.setState({
-                    error: 'Could not log in.',
-                })
-            })
-    }
-
     render() {
         const { username, password } = this.state
         return (
             <div id="section__login" className='border rounded mb-3 bg-white'>
-                <form className='d-flex flex-column gap-3 m-3' onSubmit={this.login}>
+                <form className='d-flex flex-column gap-3 m-3' onSubmit={e => createSession(e, username, password)}>
                     <input name="username"
                         type="text"
                         className='w-100 form-control'

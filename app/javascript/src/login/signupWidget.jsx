@@ -1,12 +1,11 @@
 import React from 'react'
-import { safeCredentials, handleErrors } from '../../utils/fetchHelper';
+import { createUser, createSession } from '../../utils/API'
 
 class SignupWidget extends React.Component {
     state = {
         username: '',
         email: '',
         password: '',
-        error: '',
     }
 
     handleChange = (e) => {
@@ -15,65 +14,10 @@ class SignupWidget extends React.Component {
         })
     }
 
-    signup = (e) => {
-        if (e) { e.preventDefault(); }
-        this.setState({
-            error: '',
-        });
-        console.log('clicked')
-
-        fetch('/api/users', safeCredentials({
-            method: 'POST',
-            body: JSON.stringify({
-                user: {
-                    email: this.state.email,
-                    username: this.state.username,
-                    password: this.state.password,
-                }
-            })
-        }))
-            .then(handleErrors)
-            .then(data => {
-                this.login()
-            }).catch(error => {
-                this.setState({
-                    error: 'Could not sign up.',
-                })
-            })
-    }
-
-    login = (e) => {
-        if (e) { e.preventDefault(); }
-        this.setState({
-            error: '',
-        });
-
-        console.log('logging in')
-        fetch('/api/sessions', safeCredentials({
-            method: 'POST',
-            body: JSON.stringify({
-                user: {
-                    username: this.state.username,
-                    password: this.state.password,
-                }
-            })
-        }))
-            .then(handleErrors)
-            .then(data => {
-                const params = new URLSearchParams(window.location.search);
-                const redirect_url = params.get('redirect_url') || '/';
-                window.location = redirect_url;
-            }).catch(error => {
-                this.setState({
-                    error: 'Could not log in.',
-                })
-            })
-    }
-
     render() {
-        const { email, username, password, error } = this.state
+        const { email, username, password } = this.state
         return (
-            <form id='section__signup' className='border rounded p-3 bg-white' onSubmit={this.signup}>
+            <form id='section__signup' className='border rounded p-3 bg-white' onSubmit={e => createUser(e, email, username, password).then(createSession(e, username, password))}>
                 <div>
                     <strong className='pe-2'>New to Twitter?</strong>
                     <a href="#" className='text-decoration-none text-secondary'>Sign up</a>

@@ -2,13 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { safeCredentials, handleErrors } from '../../utils/fetchHelper';
 
+import Nav from '../nav';
 import LoginWidget from './loginWidget';
 import SignupWidget from './signupWidget';
 
 import './login.scss';
-
-// post user
-// get user/authenticated
 
 class Login extends React.Component {
     state = {
@@ -30,24 +28,7 @@ class Login extends React.Component {
         const { authenticated, show_login } = this.state;
         return (
             <>
-                <nav className='navbar navbar-expand navbar-light bg-light'>
-                    <div className='container'>
-                        <a href="/">
-                            <i className="fa-brands fa-twitter fs-5 text-primary"></i>
-                        </a>
-                        <div className='collapse navbar-collapse'>
-                            <div className='ms-auto'>
-                                <label htmlFor='language'>language:</label>
-                                <select className='ms-2' name="language" id='language_dropdown'>
-                                    <option>Bahasa Malaya</option>
-                                    <option>Dansk</option>
-                                    <option>English</option>
-                                    <option>Suomi</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+                <Nav />
                 <main className='container row m-auto mt-5'>
                     <div className='col-6 d-flex flex-column justify-content-between'>
                         <div className='me-lg-5'>
