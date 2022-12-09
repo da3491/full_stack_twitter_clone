@@ -42,7 +42,9 @@ export const createSession = (e, username, password) => {
                 const redirect_url = params.get('redirect_url') || '/';
                 window.location = redirect_url;
             }
+            return data
         }).catch(error => {
+            console.log(error)
             return error
         })
 }
@@ -91,6 +93,7 @@ export const getTweets = () => {
             return data
         })
         .catch(error => {
+            console.log(error)
             return error
         })
 }

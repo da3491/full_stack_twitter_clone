@@ -1,5 +1,8 @@
 module Api
   class TweetsController < ApplicationController
+    # this line returns 500 internal server error when going to home page
+    # before_action authorize:, only: [:create, :delete]
+
     def index
       @tweets = Tweet.all.order(created_at: :desc)
       render 'api/tweets/index'

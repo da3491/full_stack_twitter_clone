@@ -1,4 +1,6 @@
 class StaticPagesController < ApplicationController
+  before_action :user_is_authenticated, except: [:login]
+
   def home
     render 'home'
   end

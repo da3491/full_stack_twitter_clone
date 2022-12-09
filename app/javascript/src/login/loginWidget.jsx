@@ -19,7 +19,7 @@ class LoginWidget extends React.Component {
         const { username, password } = this.state
         return (
             <div id="section__login" className='border rounded mb-3 bg-white'>
-                <form className='d-flex flex-column gap-3 m-3' onSubmit={e => createSession(e, username, password)}>
+                <form className='d-flex flex-column gap-3 m-3' onSubmit={e => createSession(e, username, password).then(response => console.log(response))}>
                     <input name="username"
                         type="text"
                         className='w-100 form-control'
